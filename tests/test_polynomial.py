@@ -1,16 +1,18 @@
 from polynomials import Polynomial
 import pytest
 
+#Test para mostrar por pantalla
 def test_print():
 
     p=Polynomial((2,1,3,0,4))
 
-    assert str(p) == "4x**4 + 3x**2 + x + 2"
+    assert str(p) == "4x^4 + 3x^2 + x + 2"
 
+#Test para ver identidad
 def test_equality():
     assert Polynomial((0,1))==Polynomial((0,1))
 
-
+#Tests para comprobar la suma
 @pytest.mark.parametrize(
     "a, b, sum",
     (((0,),(0,1),(0,1)),
@@ -32,6 +34,8 @@ def test_add_unknown():
     with pytest.raises(TypeError):
         Polynomial((1,))+ "frog"
 
+
+#Tests para comprobar la resta
 @pytest.mark.parametrize(
     "a, b, sub",
     (((0,),(0,1),(0,-1)),
@@ -48,6 +52,7 @@ def test_sub_scalar():
 def test_reverse_sub_scalar():
     assert 3 -Polynomial((2,1))==Polynomial((1,1))
 
+#Tests para comprobar la multiplicacion
 @pytest.mark.parametrize(
     "a, b, mul",
     (((2,0,3),(1,2),(2,4,3,6)),
@@ -63,3 +68,25 @@ def test_mul_scalar():
 
 def test_reverse_mul_scalar():
     assert 3*Polynomial((2,1))==Polynomial((6,3))
+
+#Tests para comprobar la potencia
+@pytest.mark.parametrize(
+    "a, b, pow",
+    (((2,0,3),3,(8,0,36,0,54,0,27)),
+     ((4,2),2,(16,16,4)),
+     ((0,-1,2),5,(0,0,0,0,0,-1,10,-40,80,-80,32)))
+)
+
+def test_pow(a,b,pow):
+    assert Polynomial(a)**b == Polynomial(pow)
+
+#Test para comprobar la evaluacion
+@pytest.mark.parametrize(
+    "a, b, ev",
+    (((2,0,3),3,29),
+     ((4,2),2,8),
+     ((0,-1,2),5,45))
+)
+
+def test_ev(a,b,ev):
+    assert Polynomial(a)(b)==ev

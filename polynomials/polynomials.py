@@ -1,4 +1,4 @@
-from numbers import Number #para comrpobar si algo es un numero
+from numbers import Number, Integral #para comrpobar si algo es un numero
 
 class Polynomial:
     #El primer método inicializa a polinomio, tomandose a si mismo y los coeficientes p=Polynomial((0,1,3))
@@ -23,7 +23,7 @@ class Polynomial:
         if self.degree() and coefs[1]:
             terms.append(f"{'' if coefs[1]==1 else coefs[1]}x") #f format para el string
 
-        terms += [f"{''if c == 1 else c}x**{d}"
+        terms += [f"{''if c == 1 else c}x^{d}"
                   for d, c in enumerate(coefs[2:], start =2) if c ] #enumerate toma el índice para d (start en 2) y el obejto para c
 
         return " + ".join(reversed(terms)) or "0" #si terms está vacío, la primera parte será falsa y devuelve la segunda
@@ -93,18 +93,45 @@ class Polynomial:
         if isinstance(other, Polynomial):
             deg_max=self.degree()+other.degree()
             coefs=tuple()
-            for a in range(0,deg_max):
+            for a in range(deg_max+1):
                 suma=0
-                for i in range(0,self.degree()):
-                    for j in range(0,other.degree()):
+                for i in range(self.degree()+1):
+                    for j in range(other.degree()+1):
                         if i+j==a:
                             suma=suma+self.coefficients[i]*other.coefficients[j] #definicion obtenida de Alg conm y comptqui
-                coefs+=tuple(suma,)
+                coefs+=suma,
 
             return Polynomial(coefs)
         
         elif isinstance(other, Number):
-            return Polynomial(self.coefficients[0:]*other,) #la coma detrás de other es para hacerlo una tupla de long 1
+            coefs=tuple()
+            for a in range(self.degree()+1):
+                coefs+=other*self.coefficients[a],
+            return Polynomial(coefs) #la coma detrás de other es para hacerlo una tupla de long 1
 
         else:
             return NotImplemented 
+
+    def __rmul__(self,other):
+        return self*other
+    
+
+    #Exponenciacion por una potencia entera positiva
+    def __pow__(self,other):
+        if isinstance(other,Integral) and other>=0:
+            power=Polynomial((1,))
+            for i in range(other):
+                power=power*self
+            return power
+        else:
+            return NotImplemented
+        
+    #Evaluación del polinomio en un escalar
+    def __call__(self, other):
+        if isinstance(other,Number):
+            evaluacion=0
+            for i in range(self.degree()+1):
+                evaluacion+=self.coefficients[i]*other**i    
+            return evaluacion
+        else:
+            return NotImplemented
