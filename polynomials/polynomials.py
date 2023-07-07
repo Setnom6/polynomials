@@ -52,3 +52,59 @@ class Polynomial:
 
     def __radd__(self,other): #metodo para sumar por la izquierda
         return self+other
+    
+    #Metodos para restar
+
+    def __sub__(self, other):
+        if isinstance(other, Polynomial):
+            common=min(self.degree(),other.degree())+1 #numero de terminos en comun incluyendo al independiente
+            coefs = tuple(a - b for a, b in zip(self.coefficients, other.coefficients)) #zip recorre ambas tuplas y para cuando una se acaba
+            other_restados=tuple(map(lambda n: -n, other.coefficients)) #forma de hacer una funcion rapida que cambie el signo
+            coefs += self.coefficients[common:] + other_restados[common:]
+
+            return Polynomial(coefs)
+        
+        elif isinstance(other, Number):
+            return Polynomial((self.coefficients[0]-other,)+self.coefficients[1:]) #la coma detrás de other es para hacerlo una tupla de long 1
+
+        else:
+            return NotImplemented 
+        
+    def __rsub__(self,other): #al no ser simétrica hay que hacerla de nuevo
+        if isinstance(other, Polynomial):
+            common=min(self.degree(),other.degree())+1 #numero de terminos en comun incluyendo al independiente
+            coefs = tuple(b - a for a, b in zip(self.coefficients, other.coefficients)) #zip recorre ambas tuplas y para cuando una se acaba
+            self_restados=tuple(map(lambda n: -n, self.coefficients)) #forma de hacer una funcion rapida que cambie el signo
+            coefs += other.coefficients[common:] + self_restados[common:]
+
+            return Polynomial(coefs)
+        
+        elif isinstance(other, Number):
+            return Polynomial((-self.coefficients[0]+other,)+self.coefficients[1:]) #la coma detrás de other es para hacerlo una tupla de long 1
+
+        else:
+            return NotImplemented 
+        
+
+    #Implementamos ahora la multiplicación
+
+    def __mul__(self, other):
+
+        if isinstance(other, Polynomial):
+            deg_max=self.degree()+other.degree()
+            coefs=tuple()
+            for a in range(0,deg_max):
+                suma=0
+                for i in range(0,self.degree()):
+                    for j in range(0,other.degree()):
+                        if i+j==a:
+                            suma=suma+self.coefficients[i]*other.coefficients[j] #definicion obtenida de Alg conm y comptqui
+                coefs+=tuple(suma,)
+
+            return Polynomial(coefs)
+        
+        elif isinstance(other, Number):
+            return Polynomial(self.coefficients[0:]*other,) #la coma detrás de other es para hacerlo una tupla de long 1
+
+        else:
+            return NotImplemented 
