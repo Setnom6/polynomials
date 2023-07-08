@@ -3,18 +3,21 @@ from numbers import Number, Integral #para comrpobar si algo es un numero
 class Polynomial:
     #El primer método inicializa a polinomio, tomandose a si mismo y los coeficientes p=Polynomial((0,1,3))
     def __init__(self, coefs):
+        if len(coefs)<=1 or coefs[-1]!=0:
+            coefs_sinceros=coefs
+        else:
+            i=0
+            for n in reversed(coefs):
+                if n==0:
+                    i=i-1
+                else:
+                    break
+            coefs_sinceros=coefs[0:i]
+        self.coefficients =coefs_sinceros #atributo coeficientes
 
-        self.coefficients =coefs #atributo coeficientes
-
-    #Este metodo devuelve el grado del polinomio, además tiene en cuenta si hay ceros que no influyen al grado
+    #Este metodo devuelve el grado del polinomio
     def degree(self):
-        i=-1
-        for n in reversed(self.coefficients):
-            if n==0:
-                i=i-1
-            else:
-                break
-        return len(self.coefficients[0:i]) #en realidad deberia ir hasta i+1 y fuera de len() sumarle 1
+        return len(self.coefficients)-1
     
     #Este metodo se usa para mostrar en pantalla la representacion de p:  print(p)
     def __str__(self):

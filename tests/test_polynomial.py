@@ -113,5 +113,5 @@ def test_div():
 def test_mod():
     f=Polynomial((1,0,0,-2,3))
     g=Polynomial((-1,2))
-    rest=Polynomial((0.9375))
+    rest=Polynomial((0.9375,))
     assert f%g==rest
