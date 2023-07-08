@@ -90,3 +90,14 @@ def test_pow(a,b,pow):
 
 def test_ev(a,b,ev):
     assert Polynomial(a)(b)==ev
+
+#Test para comprobar derivada
+@pytest.mark.parametrize(
+    "a, dx",
+    (((2,0,3),(0,6)),
+     ((4,2),(2,)),
+     ((1,-1,2,0,5),(-1,4,0,20)))
+)
+
+def test_dx(a,dx):
+    assert Polynomial(a).dx()==Polynomial(dx)

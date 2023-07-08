@@ -135,3 +135,13 @@ class Polynomial:
             return evaluacion
         else:
             return NotImplemented
+        
+    #Derivada formal de un polinomio (metodo)
+    def dx(self):
+        coefs=tuple(a*b for a,b in enumerate(self.coefficients[1:],start = 1))
+        return Polynomial(coefs)
+    
+#funcion derivada para llamarla
+def derivative(p):
+    return p.dx()
+
