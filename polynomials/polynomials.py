@@ -6,10 +6,15 @@ class Polynomial:
 
         self.coefficients =coefs #atributo coeficientes
 
-    #Este metodo devuelve el grado del polinomio
+    #Este metodo devuelve el grado del polinomio, además tiene en cuenta si hay ceros que no influyen al grado
     def degree(self):
-
-        return len(self.coefficients)-1
+        i=-1
+        for n in reversed(self.coefficients):
+            if n==0:
+                i=i-1
+            else:
+                break
+        return len(self.coefficients[0:i]) #en realidad deberia ir hasta i+1 y fuera de len() sumarle 1
     
     #Este metodo se usa para mostrar en pantalla la representacion de p:  print(p)
     def __str__(self):
@@ -141,7 +146,74 @@ class Polynomial:
         coefs=tuple(a*b for a,b in enumerate(self.coefficients[1:],start = 1))
         return Polynomial(coefs)
     
+    #Implementamos la division con resto (algoritmo obtenido del caso multivariable de alg conm y comp con solo un fi=other)
+
+    def __floordiv__(self,other):
+        if isinstance(other,Polynomial):
+            if other.degree()>self.degree():
+                return Polynomial((0,))
+            else:
+                p=self
+                r=Polynomial((0,))
+                q=Polynomial((0,))
+                while p!=Polynomial((0,)):
+                    i=1
+                    step=0
+                    while i<=1 and step ==0:
+                        gamma=p.degree()-other.degree()
+                        if gamma>=0:
+                            monomio=tuple((0,))*gamma
+                            monomio+=(1,)
+                            q=q+(p.coefficients[p.degree()]/other.coefficients[other.degree()])*Polynomial(monomio)
+                            p=p-(p.coefficients[p.degree()]/other.coefficients[other.degree()])*Polynomial(monomio)*other
+                            step+=1
+                        else:
+                            i+=1
+                    if step==0:
+                        term_lider_p=tuple((0,))*p.degree()
+                        term_lider_p+=(p.coefficients[p.degree()],)
+                        r=r+Polynomial(term_lider_p)
+                        p=p-Polynomial(term_lider_p)
+                        print(p)
+                return q
+
+        else:
+            return NotImplemented
+        
+    def __mod__(self,other):
+        if isinstance(other,Polynomial):
+            if other.degree()>self.degree():
+                return self
+            else:
+                p=self
+                r=Polynomial((0,))
+                q=Polynomial((0,))
+                while p!=Polynomial((0,)):
+                    i=1
+                    step=0
+                    while i<=1 and step ==0:
+                        gamma=p.degree()-other.degree()
+                        if gamma>=0:
+                            monomio=tuple((0,))*gamma
+                            monomio+=(1,)
+                            q=q+(p.coefficients[p.degree()]/other.coefficients[other.degree()])*Polynomial(monomio)
+                            p=p-(p.coefficients[p.degree()]/other.coefficients[other.degree()])*Polynomial(monomio)*other
+                            step+=1
+                        else:
+                            i+=1
+                    if step==0:
+                        term_lider_p=tuple((0,))*p.degree()
+                        term_lider_p+=(p.coefficients[p.degree()],)
+                        r=r+Polynomial(term_lider_p)
+                        p=p-Polynomial(term_lider_p)
+                return r
+
+        else:
+            return NotImplemented
+        
+    
 #funcion derivada para llamarla
 def derivative(p):
     return p.dx()
+
 

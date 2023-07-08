@@ -101,3 +101,17 @@ def test_ev(a,b,ev):
 
 def test_dx(a,dx):
     assert Polynomial(a).dx()==Polynomial(dx)
+
+#Test de division y resto
+
+def test_div():
+    f=Polynomial((1,0,0,-2,3))
+    g=Polynomial((-1,2))
+    div=Polynomial((-0.0625,-0.125,-0.25,1.5))
+    assert f//g==div
+
+def test_mod():
+    f=Polynomial((1,0,0,-2,3))
+    g=Polynomial((-1,2))
+    rest=Polynomial((0.9375))
+    assert f%g==rest
